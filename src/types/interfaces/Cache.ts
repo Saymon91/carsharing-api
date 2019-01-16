@@ -4,10 +4,22 @@ import crypto from 'crypto'
 class Cache {
   private client: any
   private hashGen = crypto.createHash('sha256')
+  private static _name = 'redis'
 
-  async init(config: object): Promise<Cache> {
+  public static get NAME(): string {
+    return Cache._name;
+  }
+
+  public static get config(): object {
+    return Object
+      .keys(process.env)
+      .filter(key => key.startsWith(Cache.NAME))
+      .reduce((config, key) => Object.assign(config, { [key]: process.env[key] }), {});
+  }
+
+  async init(): Promise<Cache> {
     return new Promise(resolve => {
-      this.client = new Redis(config)
+      this.client = new Redis(Cache.config)
       this.client
         .once('connect', () => resolve(this))
         .on('error', console.error)
@@ -15,7 +27,7 @@ class Cache {
     });
   }
 
-  private hash(key: string): string {
+  public hash(key: string): string {
     return this.hashGen.update(key).digest('hex')
   }
 

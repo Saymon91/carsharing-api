@@ -2,6 +2,7 @@ import * as Koa from 'koa'
 import Router from 'koa-router'
 import { Redis } from 'ioredis'
 import bodyParserMiddleware from 'koa-bodyparser'
+
 const bearerTokenMiddleware = require('koa-bearer-token')
 
 export default abstract class Base {
@@ -25,9 +26,9 @@ export default abstract class Base {
     return this;
   }
 
-  protected errorHandler({ response }: object, error: Error): void {
-    response.status = 500
-    response.body = {
+  protected errorHandler(error: Error, ctx: object): void {
+    ctx.response.status = 500
+    ctx.response.body = {
       success: true,
       data: this.cache.hgetall('cars')
     }

@@ -3,14 +3,23 @@ import * as interfaces from './interfaces'
 
 class App {
 
-  private express: any
+  private interfaces: object
+
 
   constructor() {
-    this.express = express()
-    this.mountRoutes()
+
   }
 
-  private mountRoutes(): void {
+  async initInterfaces(): void {
+
+  }
+
+  async init(): void {
+    const app =
+    await this.mountRoutes()
+  }
+
+  private mountRoutes(app): void {
     const router = express.Router()
     router.get('/', (req, res) => {
       res.json({
